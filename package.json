@@ -1,0 +1,38 @@
+{
+  "name": "ohdsi-ui-toolbox",
+  "version": "1.0.0",
+  "description": "Shared front-end solutions (services, utility methods, etc) between Atlas, Arachne, Athena",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OHDSI/UiToolbox"
+  },
+  "main": "lib/es/index.js",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "test": "nyc mocha",
+    "clean": "rimraf lib",
+    "build": "npm run clean && npm run build:es & npm run build:umd",
+    "build:es": "babel src --out-dir lib/es",
+    "build:umd": "babel src --out-dir lib/umd --plugins transform-es2015-modules-umd"
+  },
+  "author": "Alexander Saltykov <a_salt@live.ru>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "form-data": "^2.3.2",
+    "lodash": "^4.17.10",
+    "mocha": "^5.2.0",
+    "node-fetch-polyfill": "^2.0.6",
+    "nyc": "^12.0.2",
+    "rimraf": "^2.6.2",
+    "urijs": "^1.19.1"
+  },
+  "peerDependencies": {
+    "urijs": "^1.19.1"
+  }
+}
