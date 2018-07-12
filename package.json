@@ -1,5 +1,5 @@
 {
-  "name": "ohdsi-ui-toolbox",
+  "name": "@ohdsi/ui-toolbox",
   "version": "1.0.0",
   "description": "Shared front-end solutions (services, utility methods, etc) between Atlas, Arachne, Athena",
   "repository": {
