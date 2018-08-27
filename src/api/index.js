@@ -13,10 +13,6 @@ const METHODS = {
 };
 const JSON_RESPONSE_TYPE = 'application/json';
 
-const HEADERS = {
-  Accept: JSON_RESPONSE_TYPE,
-};
-
 /**
  * Class for making AJAX calls
  */
@@ -26,6 +22,12 @@ export class Api {
     this.apiHost = '';
     /** @type string */
     this.AUTH_TOKEN_HEADER = 'Arachne-Auth-Token';
+  }
+
+  get headers() {
+    return {
+      Accept: JSON_RESPONSE_TYPE,
+    };
   }
 
   /**
@@ -78,8 +80,8 @@ export class Api {
     alert('Oooops!.. Something went wrong :(');
   }
 
-  getHeaders() {
-    const headers = Object.assign({}, HEADERS);
+  getHeaders(requestUrl) {
+    const headers = Object.assign({}, this.headers);
     const token = this.getUserToken();
 
     if (token) {
@@ -114,7 +116,7 @@ export class Api {
   sendRequest(method, path, payload, callback) {
     const params = {
       method,
-      headers: this.getHeaders(),
+      headers: this.getHeaders(path),
     };
 
     if (payload && payload instanceof FormData) {
@@ -132,18 +134,38 @@ export class Api {
     return fetch(fullpath, params)
       .then(res => {
         return res.text()
-          // Protection from empty response
-          .then(text => text ? JSON.parse(text) : {})
-          .then(json => ({ ok: res.ok, status: res.status, json }))
+          .then(text => this.parseResponse(text))
+          .then(data => this.sendResult(res, data))
       })
-      .then((res) => {
-        if (this.checkStatusError(res)) {
-          if (typeof callback === 'function') {
-            callback(res.json);
-          }
-        }
-        return res.json;
-      });
+      .then(res => this.afterRequestHook(res, method, path, callback));
+  }
+  
+  /**
+   * Performs initial sanitizing of the ajax response
+   * @param {string} text text returned by ajax
+   * @returns any
+   */
+  parseResponse(text) {
+    // Protection from empty response
+    return text ? JSON.parse(text) : {};
+  }
+
+  /**
+   * Creates structured object to be used in callback
+   * @param {object} res response object returned by fetch
+   * @param {any} parsedResponse anything returned by parseResponse
+   */
+  sendResult(res, parsedResponse) {
+    return { ok: res.ok, status: res.status, json: parsedResponse };
+  }
+
+  afterRequestHook(res, method, path, callback) {
+    if (this.checkStatusError(res)) {
+      if (typeof callback === 'function') {
+        callback(res.json);
+      }
+    }
+    return res.json;
   }
 
   doGet(path, payload = {}, callback) {
