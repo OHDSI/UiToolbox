@@ -120,3 +120,22 @@ describe('Methods', () => {
     });
   });
 });
+
+describe('Response statuses', () => {
+  describe('2xx', () => {
+    it('Should treat 2xx status codes as successful', (done) => {      
+      const api = prepare();
+      api.doGet(url('status/201'))
+        .then(() => done());
+    });
+  });
+  
+  describe('401', () => {
+    it('Should fail on unauthorized requests', (done) => {
+      const api = prepare();
+      api.doGet(url('basic-auth'), { username: 'postman', password: 'not-specified' })
+        .then(() => done('This should fail'))
+        .catch(() => done());
+    });
+  });
+});
