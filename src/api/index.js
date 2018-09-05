@@ -99,9 +99,11 @@ export class Api {
   checkStatusError(response) {
     const status = response.status;
 
+    if (status >= 200 && status < 300) {
+      return true;
+    }
+
     switch (status) {
-      case STATUS.OK:
-        return true;
       case STATUS.UNAUTHORIZED:
         this.handleUnauthorized(response.json);
         break;
