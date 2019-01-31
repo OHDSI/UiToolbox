@@ -4,6 +4,7 @@ var URI = require('urijs');
 const STATUS = {
   OK: 200,
   UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
 };
 const METHODS = {
   GET: 'GET',
