@@ -1,7 +1,7 @@
 // @ts-check
 var URI = require('urijs');
 
-const STATUS = {
+export const STATUS = {
   OK: 200,
   UNAUTHORIZED: 401,
   NOT_FOUND: 404,
